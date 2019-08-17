@@ -1,0 +1,42 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
+android {
+    signingConfigs {
+        config {
+            storeFile file('../keystore/key.jks')
+            storePassword 'smvnbwekchk23bn'
+            keyAlias 'key0'
+            keyPassword 'smvnbwekchk23bn'
+        }
+    }
+
+    compileSdkVersion 29
+    buildToolsVersion "29.0.2"
+    defaultConfig {
+        applicationId "com.qwert2603.iau_test"
+        minSdkVersion 21
+        targetSdkVersion 29
+        versionCode 1009
+        versionName "10.9"
+        archivesBaseName = "iau_test_$versionName"
+    }
+    buildTypes {
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
+            debuggable true
+        }
+    }
+}
+
+dependencies {
+    implementation project(path: ':library')
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'androidx.appcompat:appcompat:1.1.0-rc01'
+    implementation 'com.google.android.material:material:1.0.0'
+}
