@@ -34,7 +34,8 @@ android {
 }
 
 dependencies {
-    implementation project(path: ':library')
+//    implementation project(path: ':library')
+    implementation 'com.github.qwert2603:IAUHelper:1.0.0'
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.1.0-rc01'
