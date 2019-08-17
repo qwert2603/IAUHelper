@@ -12,15 +12,16 @@ import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability
 
-class UpdateHelperFlexible(
+class UpdateHelperFlexible @JvmOverloads constructor(
     private val activity: AppCompatActivity,
     onUpdateDownloaded: () -> Unit,
-    checkUpdateInterval: Long = 1000L * 60 * 60 * 42, // 42 hours.
-    private val logger: ((String) -> Unit)? = null
+    private val logger: ((String) -> Unit)? = null,
+    checkUpdateInterval: Long = DEFAULT_CHECK_UPDATE_INTERVAL
 ) {
 
     companion object {
-        private const val REQUEST_UPDATE = 18
+        const val REQUEST_UPDATE = 18
+        const val DEFAULT_CHECK_UPDATE_INTERVAL = 1000L * 60 * 60 * 42 // 42 hours.
     }
 
     private val className = "UpdateHelperFlexible"
