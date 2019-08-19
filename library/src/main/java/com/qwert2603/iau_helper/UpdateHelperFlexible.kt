@@ -11,6 +11,7 @@ import com.google.android.play.core.install.InstallStateUpdatedListener
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability
+import java.lang.ref.WeakReference
 
 class UpdateHelperFlexible(
     private val activity: AppCompatActivity,
@@ -26,7 +27,7 @@ class UpdateHelperFlexible(
 
     private val className = "UpdateHelperFlexible"
 
-    private val appUpdateManager = AppUpdateManagerFactory.create(activity)
+    private val appUpdateManager = AppUpdateManagerFactory.create(activity.applicationContext)
 
     private fun log(s: String) {
         logger?.invoke(s)
@@ -41,11 +42,13 @@ class UpdateHelperFlexible(
     }
 
     private var lastAskToUpdateMillis by prefsLong(
-        prefs = PreferenceManager.getDefaultSharedPreferences(activity),
+        prefs = PreferenceManager.getDefaultSharedPreferences(activity.applicationContext),
         key = "lastAskToUpdateMillis"
     )
 
     init {
+        val activityWeak = WeakReference(activity)
+
         @Suppress("UNUSED")
         activity.lifecycle.addObserver(object : LifecycleObserver {
             @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
@@ -67,7 +70,7 @@ class UpdateHelperFlexible(
                                 "${appUpdateInfo.installStatus()} ${appUpdateInfo.updateAvailability()}"
                     )
 
-                    if (!activity.isDestroyed && appUpdateInfo.installStatus() == InstallStatus.DOWNLOADED) {
+                    if (activityWeak.get()?.isDestroyed == false && appUpdateInfo.installStatus() == InstallStatus.DOWNLOADED) {
                         onUpdateDownloaded(this@UpdateHelperFlexible)
                     }
                 }
