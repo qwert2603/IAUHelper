@@ -14,29 +14,15 @@ import com.google.android.play.core.install.model.UpdateAvailability
 
 class UpdateHelperFlexible(
     private val activity: AppCompatActivity,
-    onUpdateDownloaded: () -> Unit,
+    onUpdateDownloaded: (UpdateHelperFlexible) -> Unit,
     private val logger: ((String) -> Unit)? = null,
     checkUpdateInterval: Long = DEFAULT_CHECK_UPDATE_INTERVAL
 ) {
 
     companion object {
         const val REQUEST_UPDATE = 18
-        const val DEFAULT_CHECK_UPDATE_INTERVAL = 1000L * 60 * 60 * 42 // 42 hours.
+        const val DEFAULT_CHECK_UPDATE_INTERVAL = 1000L * 60 * 60 * 72 // 72 hours.
     }
-
-    @JvmOverloads
-    @Suppress("UNUSED")
-    constructor(
-        activity: AppCompatActivity,
-        onUpdateDownloaded: Callback,
-        logger: Logger? = null,
-        checkUpdateInterval: Long = DEFAULT_CHECK_UPDATE_INTERVAL
-    ) : this(
-        activity = activity,
-        onUpdateDownloaded = { onUpdateDownloaded.invoke() },
-        logger = { logger?.log(it) },
-        checkUpdateInterval = checkUpdateInterval
-    )
 
     private val className = "UpdateHelperFlexible"
 
@@ -50,7 +36,7 @@ class UpdateHelperFlexible(
         log("$className updateListener $state")
         if (state.installStatus() == InstallStatus.DOWNLOADED) {
             log("$className DOWNLOADED onUpdateDownloaded")
-            onUpdateDownloaded()
+            onUpdateDownloaded(this)
         }
     }
 
@@ -81,8 +67,8 @@ class UpdateHelperFlexible(
                                 "${appUpdateInfo.installStatus()} ${appUpdateInfo.updateAvailability()}"
                     )
 
-                    if (appUpdateInfo.installStatus() == InstallStatus.DOWNLOADED) {
-                        onUpdateDownloaded()
+                    if (!activity.isDestroyed && appUpdateInfo.installStatus() == InstallStatus.DOWNLOADED) {
+                        onUpdateDownloaded(this@UpdateHelperFlexible)
                     }
                 }
             }

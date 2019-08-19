@@ -10,29 +10,26 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class FlexibleActivity : AppCompatActivity() {
 
-    private lateinit var updateHelperFlexible: UpdateHelperFlexible
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         @SuppressLint("SetTextI18n")
         version_TextView.text = "${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})"
 
-        updateHelperFlexible = UpdateHelperFlexible(
+        UpdateHelperFlexible(
             activity = this,
-            onUpdateDownloaded = this::popupSnackbarForCompleteUpdate,
+            onUpdateDownloaded = { updateHelperFlexible ->
+                Snackbar.make(
+                    this.findViewById(R.id.root_FrameLayout),
+                    R.string.iau_helper_update_is_downloaded,
+                    Snackbar.LENGTH_INDEFINITE
+                ).apply {
+                    this.setAction(R.string.iau_helper_install) { updateHelperFlexible.completeUpdate() }
+                    this.show()
+                }
+            },
             logger = { Log.d("iau_helper", it) }
         )
     }
 
-    private fun popupSnackbarForCompleteUpdate() {
-        Snackbar.make(
-            findViewById(R.id.root_FrameLayout),
-            "An update has just been downloaded.",
-            Snackbar.LENGTH_INDEFINITE
-        ).apply {
-            setAction("RESTART") { updateHelperFlexible.completeUpdate() }
-            show()
-        }
-    }
 }
