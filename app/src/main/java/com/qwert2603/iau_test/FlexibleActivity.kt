@@ -16,7 +16,7 @@ class FlexibleActivity : AppCompatActivity() {
         @SuppressLint("SetTextI18n")
         version_TextView.text = "${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})"
 
-        UpdateHelperFlexible(
+        UpdateHelperFlexible.create(
             activity = this,
             onUpdateDownloaded = { updateHelperFlexible ->
                 Snackbar.make(
@@ -29,7 +29,7 @@ class FlexibleActivity : AppCompatActivity() {
                 }
             },
             logger = { Log.d("iau_helper", it) }
-        )
+        ).start()
     }
 
 }
